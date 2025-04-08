@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>House Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+        input, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>House Price Prediction</h2>
+        <form id="prediction-form">
+            <label for="bedrooms">Bedrooms:</label>
+            <input type="number" name="bedrooms" required>
+
+            <label for="bathrooms">Bathrooms:</label>
+            <input type="number" name="bathrooms" required>
+
+            <label for="livingarea">Living Area (sqft):</label>
+            <input type="number" name="livingarea" required>
+
+            <label for="floors">Number of Floors:</label>
+            <input type="number" name="floors" required>
+
+            <label for="arhouse">Area of House (sqft):</label>
+            <input type="number" name="arhouse" required>
+
+            <label for="builtyr">Built Year:</label>
+            <input type="number" name="builtyr" required>
+
+            <label for="lotarea">Lot Area (sqft):</label>
+            <input type="number" name="lotarea" required>
+
+            <label for="grade">Grade of House:</label>
+            <input type="number" name="grade" required>
+
+            <label for="waterfront">Waterfront (1 for Yes, 0 for No):</label>
+            <input type="number" name="waterfront" required>
+
+            <button type="submit">Predict Price</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+    
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error || 'Unknown error'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('result').innerHTML =
+                    `Random Forest: $${data.RandomForest.toLocaleString()}<br>` +
+                    `Linear Regression: $${data.LinearRegression.toLocaleString()}<br>` +
+                    `XGBoost: $${data.XGBoost.toLocaleString()}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = `❌ Error: ${error.message}`;
+            });
+        });
+    </script>
+    
+</body>
+</html>
