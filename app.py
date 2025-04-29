@@ -45,6 +45,9 @@ def predict():
         print("🔥 ERROR:", e)
         return jsonify({'error': str(e)}), 400
 
+@app.route('/')
+def home():
+    return 'Server is running!'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5001, debug=True)
